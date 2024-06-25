@@ -64,6 +64,10 @@ public class CheckAppUpdate extends CordovaPlugin {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    private static String[] OTHER_PERMISSIONS_13 = {
+            Manifest.permission.INTERNET,
+    };
+
     // Prompt user for install permission if we don't already have it.
     public boolean verifyInstallPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -96,6 +100,9 @@ public class CheckAppUpdate extends CordovaPlugin {
     // Prompt user for all other permissions if we don't already have them all.
     public boolean verifyOtherPermissions() {
         boolean hasOtherPermissions = true;
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            OTHER_PERMISSIONS = OTHER_PERMISSIONS_13;
+        }
         for (String permission:OTHER_PERMISSIONS)
             hasOtherPermissions = hasOtherPermissions && cordova.hasPermission(permission);
 
