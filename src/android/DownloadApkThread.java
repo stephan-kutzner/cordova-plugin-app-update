@@ -93,10 +93,11 @@ public class DownloadApkThread implements Runnable {
 
                 while (true) {
                     if (i > 0) {
-                        apkFile = new File(mSavePath, mHashMap.get("name") + "_" + i +".apk");
-                        mHashMap.put("nameAPK", mHashMap.get("name") + "_" + i +".apk");
+                        apkFile = new File(mSavePath, mHashMap.get("name") + "_" + i + ".apk");
+                        mHashMap.put("nameAPK", mHashMap.get("name") + "_" + i + ".apk");
                     } else {
-                        apkFile = new File(mSavePath, mHashMap.get("name")+".apk");
+                        apkFile = new File(mSavePath, mHashMap.get("name") + ".apk");
+                        mHashMap.put("nameAPK", mHashMap.get("name") + ".apk");
                     }
                     if (!(apkFile.exists())) {
                         break;
