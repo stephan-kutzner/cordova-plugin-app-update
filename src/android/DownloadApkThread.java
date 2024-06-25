@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.util.Base64;
 import org.json.JSONObject;
 import org.json.JSONException;
+import org.apache.cordova.LOG;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,8 +87,38 @@ public class DownloadApkThread implements Runnable {
                 if (!file.exists()) {
                     file.mkdir();
                 }
-                File apkFile = new File(mSavePath, mHashMap.get("name")+".apk");
-                FileOutputStream fos = new FileOutputStream(apkFile);
+                int i = 0;
+
+                File apkFile;
+
+                while (true) {
+                    if (i > 0) {
+                        apkFile = new File(mSavePath, mHashMap.get("name") + "_" + i +".apk");
+                        mHashMap.put("nameAPK", mHashMap.get("name") + "_" + i +".apk");
+                    } else {
+                        apkFile = new File(mSavePath, mHashMap.get("name")+".apk");
+                    }
+                    if (!(apkFile.exists())) {
+                        break;
+                    }
+                    if (apkFile.delete()) {
+                        break;
+                    }
+                    i++;
+                }
+
+                LOG.d(TAG, "" + apkFile.exists());
+                LOG.d(TAG, "" + apkFile.canRead());
+                LOG.d(TAG, "" + apkFile.canWrite());
+//                if (apkFile.delete()) {
+//                    LOG.d(TAG, "Deleted previously downloaded APK file.");
+//                }
+                FileOutputStream fos;
+                try {
+                    fos = new FileOutputStream(apkFile);
+                } catch (java.io.FileNotFoundException e) {
+                    return;
+                }
                 int count = 0;
                 // 缓存
                 byte buf[] = new byte[1024];
