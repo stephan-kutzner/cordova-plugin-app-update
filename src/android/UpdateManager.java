@@ -97,19 +97,19 @@ public class UpdateManager {
                     isDownloading = false;
                     break;
                 case Constants.VERSION_UPDATING:
-                    callbackContext.success(Utils.makeJSON(Constants.VERSION_UPDATING, "success, version updating."));
+                    callbackContext.success(Utils.makeJSON(Constants.VERSION_UPDATING, "success, version updating..."));
                     break;
                 case Constants.VERSION_NEED_UPDATE:
-                    callbackContext.success(Utils.makeJSON(Constants.VERSION_NEED_UPDATE, "success, need date."));
+                    callbackContext.success(Utils.makeJSON(Constants.VERSION_NEED_UPDATE, "success, needs update."));
                     break;
                 case Constants.VERSION_UP_TO_UPDATE:
                     callbackContext.success(Utils.makeJSON(Constants.VERSION_UP_TO_UPDATE, "success, up to date."));
                     break;
                 case Constants.VERSION_COMPARE_FAIL:
-                    callbackContext.error(Utils.makeJSON(Constants.VERSION_COMPARE_FAIL, "version compare fail"));
+                    callbackContext.error(Utils.makeJSON(Constants.VERSION_COMPARE_FAIL, "version compare failed"));
                     break;
                 case Constants.VERSION_RESOLVE_FAIL:
-                    callbackContext.error(Utils.makeJSON(Constants.VERSION_RESOLVE_FAIL, "version resolve fail"));
+                    callbackContext.error(Utils.makeJSON(Constants.VERSION_RESOLVE_FAIL, "version resolve failed"));
                     break;
                 case Constants.REMOTE_FILE_NOT_FOUND:
                     callbackContext.error(Utils.makeJSON(Constants.REMOTE_FILE_NOT_FOUND, "remote file not found"));

@@ -59,6 +59,10 @@ public class CheckUpdateThread implements Runnable {
         queue.clear(); //ensure the queue is empty
         queue.add(new Version(versionCodeLocal, versionCodeRemote));
 
+        if (versionCodeRemote == 0) {
+            mHandler.sendEmptyMessage(Constants.VERSION_UP_TO_UPDATE);
+        }
+
         if (versionCodeLocal == 0 || versionCodeRemote == 0) {
             mHandler.sendEmptyMessage(Constants.VERSION_RESOLVE_FAIL);
         } else {
@@ -91,7 +95,7 @@ public class CheckUpdateThread implements Runnable {
             is = conn.getInputStream(); //得到网络返回的输入流
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            mHandler.sendEmptyMessage(Constants.REMOTE_FILE_NOT_FOUND);
+            mHandler.sendEmptyMessage(Constants.VERSION_UP_TO_UPDATE);
         } catch (IOException e) {
             e.printStackTrace();
             mHandler.sendEmptyMessage(Constants.NETWORK_ERROR);
