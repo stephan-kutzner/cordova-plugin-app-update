@@ -41,14 +41,14 @@ public class DownloadApkThread implements Runnable {
     private Handler mHandler;
     private AuthenticationOptions authentication;
 
-    public DownloadApkThread(Context mContext, Handler mHandler, ProgressBar mProgress, AlertDialog mDownloadDialog, HashMap<String, String> mHashMap, JSONObject options) {
+    public DownloadApkThread(Context mContext, Handler mHandler, ProgressBar mProgress, AlertDialog mDownloadDialog, HashMap<String, String> mHashMap, JSONObject options, CheckAppUpdate checkAppUpdate) {
         this.mDownloadDialog = mDownloadDialog;
         this.mHashMap = mHashMap;
         this.mHandler = mHandler;
         this.authentication = new AuthenticationOptions(options);
 
         this.mSavePath = Environment.getExternalStorageDirectory() + "/" + "download"; // SD Path
-        this.downloadHandler = new DownloadHandler(mContext, mProgress, mDownloadDialog, this.mSavePath, mHashMap);
+        this.downloadHandler = new DownloadHandler(mContext, mProgress, mDownloadDialog, this.mSavePath, mHashMap, checkAppUpdate);
     }
 
 

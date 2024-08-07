@@ -20,10 +20,12 @@ import org.json.JSONException;
  */
 public class CheckAppUpdate extends CordovaPlugin {
     public static final String TAG = "CheckAppUpdate";
+    private CallbackContext callbackContext;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("checkAppUpdate")) {
+            this.callbackContext = callbackContext;
             getUpdateManager().options(args, callbackContext);
             if (verifyInstallPermission() && verifyOtherPermissions())
                 getUpdateManager().checkUpdate();
@@ -44,7 +46,7 @@ public class CheckAppUpdate extends CordovaPlugin {
     // Generate or retrieve the UpdateManager singleton
     public UpdateManager getUpdateManager() {
         if (updateManager == null)
-            updateManager = new UpdateManager(cordova.getActivity(), cordova);
+            updateManager = new UpdateManager(cordova.getActivity(), cordova, this);
 
         return updateManager;
     }
@@ -56,6 +58,7 @@ public class CheckAppUpdate extends CordovaPlugin {
     private static final int INSTALL_PERMISSION_REQUEST_CODE = 0;
     private static final int UNKNOWN_SOURCES_PERMISSION_REQUEST_CODE = 1;
     private static final int OTHER_PERMISSIONS_REQUEST_CODE = 2;
+    private static final int INSTALL_FEEDBACK_CODE = 128;
 
     // Other necessary permissions for this plugin.
     private static String[] OTHER_PERMISSIONS = {
@@ -68,6 +71,15 @@ public class CheckAppUpdate extends CordovaPlugin {
             Manifest.permission.INTERNET,
     };
 
+    private void setCallbackContext() {
+        cordova.setActivityResultCallback(this);
+    }
+
+    public void sendIntent(Intent i, int code) {
+        setCallbackContext();
+        cordova.getActivity().startActivityForResult(i, code);
+    }
+
     // Prompt user for install permission if we don't already have it.
     public boolean verifyInstallPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -77,8 +89,7 @@ public class CheckAppUpdate extends CordovaPlugin {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     .setData(packageUri);
-                cordova.setActivityResultCallback(this);
-                cordova.getActivity().startActivityForResult(intent, INSTALL_PERMISSION_REQUEST_CODE);
+                sendIntent(intent, INSTALL_PERMISSION_REQUEST_CODE);
                 return false;
             }
         }
@@ -137,6 +148,8 @@ public class CheckAppUpdate extends CordovaPlugin {
 
             if (verifyOtherPermissions())
                 getUpdateManager().checkUpdate();
+        } else if (requestCode == INSTALL_FEEDBACK_CODE) {
+            callbackContext.error("ERROR");
         }
     }
 

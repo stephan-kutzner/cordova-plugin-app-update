@@ -25,6 +25,7 @@ import org.apache.cordova.LOG;
  */
 public class DownloadHandler extends Handler {
     private String TAG = "DownloadHandler";
+    private static final int INSTALL_FEEDBACK_CODE = 128;
 
     private Context mContext;
     /* 更新进度条 */
@@ -37,14 +38,16 @@ public class DownloadHandler extends Handler {
     private HashMap<String, String> mHashMap;
     private MsgHelper msgHelper;
     private AlertDialog mDownloadDialog;
+    private CheckAppUpdate checkAppUpdate;
 
-    public DownloadHandler(Context mContext, ProgressBar mProgress, AlertDialog mDownloadDialog, String mSavePath, HashMap<String, String> mHashMap) {
+    public DownloadHandler(Context mContext, ProgressBar mProgress, AlertDialog mDownloadDialog, String mSavePath, HashMap<String, String> mHashMap, CheckAppUpdate checkAppUpdate) {
         this.msgHelper = new MsgHelper(mContext.getPackageName(), mContext.getResources());
         this.mDownloadDialog = mDownloadDialog;
         this.mContext = mContext;
         this.mProgress = mProgress;
         this.mSavePath = mSavePath;
         this.mHashMap = mHashMap;
+        this.checkAppUpdate = checkAppUpdate;
     }
 
     public void handleMessage(Message msg) {
@@ -108,7 +111,8 @@ public class DownloadHandler extends Handler {
             Intent i = new Intent(Intent.ACTION_INSTALL_PACKAGE);
             i.setData(apkUri);
             i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            mContext.startActivity(i);
+            i.putExtra(Intent.EXTRA_RETURN_RESULT, true);
+            checkAppUpdate.sendIntent(i, INSTALL_FEEDBACK_CODE);
         }else{
             LOG.d(TAG, "Build SDK less than Nougat");
             Intent i = new Intent(Intent.ACTION_VIEW);

@@ -45,10 +45,12 @@ public class UpdateManager {
     private List<Version> queue = new ArrayList<Version>(1);
     private CheckUpdateThread checkUpdateThread;
     private DownloadApkThread downloadApkThread;
+    private CheckAppUpdate checkAppUpdate;
 
-    public UpdateManager(Context context, CordovaInterface cordova) {
+    public UpdateManager(Context context, CordovaInterface cordova, CheckAppUpdate checkAppUpdate) {
         this.cordova = cordova;
         this.mContext = context;
+        this.checkAppUpdate = checkAppUpdate;
         packageName = mContext.getPackageName();
         msgBox = new MsgBox(mContext);
     }
@@ -260,7 +262,7 @@ public class UpdateManager {
         LOG.d(TAG, "downloadApk" + mProgress);
 
         // 启动新线程下载软件
-        downloadApkThread = new DownloadApkThread(mContext, mHandler, mProgress, mDownloadDialog, checkUpdateThread.getMHashMap(), options);
+        downloadApkThread = new DownloadApkThread(mContext, mHandler, mProgress, mDownloadDialog, checkUpdateThread.getMHashMap(), options, checkAppUpdate);
         this.cordova.getThreadPool().execute(downloadApkThread);
         // new Thread(downloadApkThread).start();
     }
